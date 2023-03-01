@@ -36,6 +36,7 @@ module ALPD41Network {
         DEVICE_NUMBER = 2000, 
         VERSION = 2001, 
         DEV_STATE = 2002, 
+        DEV_DMDTYPE = 2021,
         AVAIL_MEMORY = 2003, 
         TRIGGER_TIME_OUT = 2014,
         DDC_FPGA_TEMPERATURE = 2050, 
@@ -49,7 +50,6 @@ module ALPD41Network {
         SYNCH_POLARITY = 2004,
         TRIGGER_EDGE = 2005,
         USB_CONNECTION = 2016,
-        DEV_DMDTYPE = 2021,
         DEV_DMD_MODE = 2064,
         PWM_LEVEL = 2063,
     }; 
@@ -60,15 +60,18 @@ module ALPD41Network {
     const int EDGE_RISING = 2009; 
     const int TIME_OUT_ENABLE = 0; 
     const int TIME_OUT_DISABLE = 1; 
-    const int DMDTYPE_XGA = 1; 
-    const int DMDTYPE_SXGA_PLUS = 2; 
-    const int DMDTYPE_1080P_095A = 3; 
-    const int DMDTYPE_XGA_07A = 4; 
-    const int DMDTYPE_XGA_055A = 5; 
-    const int DMDTYPE_XGA_055X = 6; 
-    const int DMDTYPE_WUXGA_096A = 7; 
-    const int DMDTYPE_DISCONNECT = 255; 
     const int DMD_POWER_FLOAT = 1; 
+
+    enum AlpDevDmdType {
+        DMDTYPE_XGA = 1,
+        DMDTYPE_SXGA_PLUS = 2,
+        DMDTYPE_1080P_095A = 3,
+        DMDTYPE_XGA_07A = 4,
+        DMDTYPE_XGA_055A = 5,
+        DMDTYPE_XGA_055X = 6,
+        DMDTYPE_WUXGA_096A = 7,
+        DMDTYPE_DISCONNECT = 255,
+    }
 
     enum AlpSeqControlType {
         SEQ_REPEAT = 2100,
