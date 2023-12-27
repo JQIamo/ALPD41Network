@@ -5,6 +5,8 @@ import time
 import numpy as np
 import ALPD41Network
 
+import matplotlib.pyplot as plt
+
 # When importing it as a module from inside a module, it might be more convenient to use a hacky way:
 # > from (...import path of Andor_ice.py file...).Andor_ice import _M_AndorNetwork as AndorNetwork
 
@@ -65,13 +67,22 @@ try:
         mask = (np.abs(X * np.cos(theta) - Y * np.sin(theta)) <= rect_w/2) & (np.abs(X * np.sin(theta) +  Y * np.cos(theta)) <= rect_h/2)
         return mask
 
-    frames = 20
+    frames = 10
     img_series = np.zeros((frames, dmd_height, dmd_width), dtype=np.byte)
 
     # create an animation of a dark rotating ellipse on bright background
     for i, theta in zip(range(frames), np.linspace(0, 2*np.pi, frames)):
-        img = np.array(create_elliptical_mask(768, 1024, radius=100, theta=theta, a=1.5, b=1), dtype=int)
-        img = 1 - img
+        img1 = np.array(create_elliptical_mask(768, 1024, radius=60, theta=theta, a=1, b=1), dtype=int)
+        #img = np.array(create_rect_mask(768, 1024, 200, 200, theta=np.pi/4), dtype=int)
+
+        img2 = 1 - np.array(create_elliptical_mask(768, 1024, radius=100, theta=theta, a=1, b=1), dtype=int)
+
+        img = img1 + img2
+
+        #plt.imshow(img)
+        #plt.show()
+
+        #img = np.ones((dmd_height, dmd_width))
 
         img_series[i] = np.array(img, dtype=np.byte)*255
 
@@ -87,15 +98,20 @@ try:
     dt = time.time() - ts
     print(f"Uploading done, time elasped: {dt*1000} ms")
 
-    #alp.AlpProjControl(dev_id, ALPD41Network.AlpProjControlType.PROJ_MODE, ALPD41Network.SLAVE)
+    alp.AlpProjControl(dev_id, ALPD41Network.AlpProjControlType.PROJ_MODE, ALPD41Network.MASTER)
 
-    alp.AlpProjStartCont(dev_id, seq_id)
+    alp.AlpProjStart(dev_id, seq_id)
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        alp.AlpDevHalt(dev_id)
+    alp.AlpProjWait(dev_id)
+
+    print(f"Projection finished")
+
+    # try:
+    #     while True:
+    #         time.sleep(1)
+    #         print("Remaining frames: ", alp.AlpProjInquireEx(dev_id, ALPD41Network.AlpProjInquireType.PROJ_PROGRESS).nFrameCounter)
+    # except KeyboardInterrupt:
+    #     alp.AlpDevHalt(dev_id)
 
 except:
     traceback.print_exc()

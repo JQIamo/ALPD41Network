@@ -1,0 +1,8 @@
+__pycache__
+build/
+lib/atmcd64m.lib
+lib/atmcd64d.dll
+python/Andor_ice.py
+python/AndorNetwork
+packages
+
